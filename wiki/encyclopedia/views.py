@@ -18,3 +18,8 @@ def get_entry(request, title):
         
 def create(request):
     return render(request, "encyclopedia/create.html")
+
+def random(request):
+    random_page = util.random_page()
+    return render(request, f"encyclopedia/{random_page}.html")
+    

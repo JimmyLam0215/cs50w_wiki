@@ -1,3 +1,4 @@
+import random
 import re
 import os.path
 import markdown2
@@ -19,9 +20,6 @@ def list_entries():
             markdown_text = get_entry(entry_name)
             find_page(entry_name, markdown_text)
     return list(sorted(entry_names))
-    """
-    return list(sorted(re.sub(r"\.md$", "", filename)
-                for filename in filenames if filename.endswith(".md")))"""
 
 
 def save_entry(title, content):
@@ -74,3 +72,18 @@ def find_page(title, markdown_text):
         html_text = markdown2.markdown(markdown_text)
         write_html(title, html_text)
 
+#function to return a list that stored all the name of the markdown file
+def get_file_name():
+    _, filenames = default_storage.listdir("entries")
+    entry_names = []
+    for filename in filenames:
+        if filename.endswith(".md"):
+            entry_name = re.sub(r"\.md$", "", filename)
+            entry_names.append(entry_name)
+    return entry_names
+
+#function to randomly choose one webpage
+def random_page():
+    entry_names = get_file_name()
+    random_num = random.randrange(0, len(entry_names))
+    return entry_names[random_num]
