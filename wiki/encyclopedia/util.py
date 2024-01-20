@@ -35,3 +35,10 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+
+#function to write the html code after conversion to a new html file
+def write_html(title, html_text):
+    with open(f"encyclopedia/templates/encyclopedia/{title}.html", 'a')as f:
+        f.write(html_text)
+        
+
