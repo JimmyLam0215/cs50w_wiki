@@ -11,8 +11,7 @@ def index(request):
 def get_entry(request, title):
     markdown_text = util.get_entry(title)
     if markdown_text != None:
-        html_text = markdown2.markdown(markdown_text)
-        util.write_html(title, html_text)
+        util.find_page(title, markdown_text)
         return render(request, f"encyclopedia/{title}.html")
     else:
         return render(request, "encyclopedia/index.html", {

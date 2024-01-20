@@ -1,5 +1,6 @@
 import re
-
+import os.path
+import markdown2
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
@@ -39,6 +40,27 @@ def get_entry(title):
 #function to write the html code after conversion to a new html file
 def write_html(title, html_text):
     with open(f"encyclopedia/templates/encyclopedia/{title}.html", 'a')as f:
-        f.write(html_text)
+        f.write(formatted_string("extends", "\"encyclopedia/layout.html\""))
+        f.write(formatted_string("block", "title"))
+        f.write(f"\t{title}\n")
+        f.write(formatted_string("endblock"))
+        f.write(formatted_string("block", "body"))
+        f.write(f"{html_text}\n")
+        f.write(formatted_string("endblock"))
         
+#function to check whther a file exist or not
+def check_file(title):
+    return os.path.isfile(f"encyclopedia/templates/encyclopedia/{title}.html")
+
+#function to return a string that to append into the html file
+def formatted_string(name, text=None):
+    if text != None:
+        return "{% "+ name + " " + text + " %}\n"
+    return "{% "+ name + " %}\n"
+
+#function to find a page 
+def find_page(title, markdown_text):
+    if not check_file(title):
+        html_text = markdown2.markdown(markdown_text)
+        write_html(title, html_text)
 
