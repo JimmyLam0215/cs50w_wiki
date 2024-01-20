@@ -14,7 +14,7 @@ def get_entry(request, title):
         util.find_page(title, markdown_text)
         return render(request, f"encyclopedia/{title}.html")
     else:
-        return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+        return render(request, "encyclopedia/missing.html")
         
+def create(request):
+    return render(request, "encyclopedia/create.html")

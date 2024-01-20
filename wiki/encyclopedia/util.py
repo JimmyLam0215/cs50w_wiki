@@ -10,8 +10,18 @@ def list_entries():
     Returns a list of all names of encyclopedia entries.
     """
     _, filenames = default_storage.listdir("entries")
+    entry_names = []
+    for filename in filenames:
+        if filename.endswith(".md"):
+            entry_name = re.sub(r"\.md$", "", filename)
+            entry_names.append(entry_name)
+        if not check_file(entry_name):
+            markdown_text = get_entry(entry_name)
+            find_page(entry_name, markdown_text)
+    return list(sorted(entry_names))
+    """
     return list(sorted(re.sub(r"\.md$", "", filename)
-                for filename in filenames if filename.endswith(".md")))
+                for filename in filenames if filename.endswith(".md")))"""
 
 
 def save_entry(title, content):
