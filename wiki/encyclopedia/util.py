@@ -54,7 +54,7 @@ def write_html(title, html_text):
         f.write(formatted_string("endblock"))
         f.write(formatted_string("block", "body"))
         f.write(f"{html_text}\n")
-        f.write("<a href=\"edit.html\">Edit this page</a>")
+        f.write("<a href=\"{% url \'edit\' %}\">Edit this page</a>")
         f.write(formatted_string("endblock"))
         
 #function to check whther a file exist or not
@@ -103,3 +103,4 @@ def get_search_results(name):
         if name.lower() in entry.lower():
             results.append(entry)
     return results
+
