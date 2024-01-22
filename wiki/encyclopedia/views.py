@@ -1,7 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from . import util
-import markdown2
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -22,4 +21,11 @@ def create(request):
 def random(request):
     random_page = util.random_page()
     return render(request, f"encyclopedia/{random_page}.html")
+
+def search(request):
+    query = request.GET.get('q', '')
+    if util.check_page_name(query.lower()):
+        return render(request, f"encyclopedia/{query}.html")
+    return render(request, f"encyclopedia/missing.html")    
+
     

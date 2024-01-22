@@ -54,6 +54,7 @@ def write_html(title, html_text):
         f.write(formatted_string("endblock"))
         f.write(formatted_string("block", "body"))
         f.write(f"{html_text}\n")
+        f.write("<a href=\"edit.html\">Edit this page</a>")
         f.write(formatted_string("endblock"))
         
 #function to check whther a file exist or not
@@ -87,3 +88,9 @@ def random_page():
     entry_names = get_file_name()
     random_num = random.randrange(0, len(entry_names))
     return entry_names[random_num]
+
+#function to check whether the keyword exist in the entries folder
+def check_page_name(name):
+    page_names = list_entries()
+    page_names_to_lower = [page_name.lower() for page_name in page_names]
+    return name in page_names_to_lower
