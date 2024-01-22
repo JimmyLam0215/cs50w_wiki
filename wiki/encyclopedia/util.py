@@ -94,3 +94,12 @@ def check_page_name(name):
     page_names = list_entries()
     page_names_to_lower = [page_name.lower() for page_name in page_names]
     return name in page_names_to_lower
+
+#function to return a list of names that fit the page name
+def get_search_results(name):
+    all_entries = list_entries()
+    results = []
+    for entry in all_entries:
+        if name.lower() in entry.lower():
+            results.append(entry)
+    return results

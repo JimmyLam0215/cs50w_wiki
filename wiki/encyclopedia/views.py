@@ -26,6 +26,11 @@ def search(request):
     query = request.GET.get('q', '')
     if util.check_page_name(query.lower()):
         return render(request, f"encyclopedia/{query}.html")
-    return render(request, f"encyclopedia/missing.html")    
+    else:
+        util.get_search_results(query)
+        return render(request, "encyclopedia/search.html", {
+            "entries": util.get_search_results(query)
+        })
+           
 
     
