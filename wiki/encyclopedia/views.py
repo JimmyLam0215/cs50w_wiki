@@ -78,4 +78,5 @@ def edit_save(request):
             "title": title,
             "content": content
         })
+
     
