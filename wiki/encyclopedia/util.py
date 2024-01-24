@@ -16,9 +16,6 @@ def list_entries():
         if filename.endswith(".md"):
             entry_name = re.sub(r"\.md$", "", filename)
             entry_names.append(entry_name)
-        if not check_file(entry_name):
-            markdown_text = get_entry(entry_name)
-            find_page(entry_name, markdown_text)
     return list(sorted(entry_names))
 
 
@@ -33,7 +30,6 @@ def save_entry(title, content):
         default_storage.delete(filename)
     default_storage.save(filename, ContentFile(content))
 
-
 def get_entry(title):
     """
     Retrieves an encyclopedia entry by its title. If no such
@@ -44,22 +40,10 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
-
-#function to write the html code after conversion to a new html file
-def write_html(title, html_text):
-    with open(f"encyclopedia/templates/encyclopedia/{title}.html", 'a')as f:
-        f.write(formatted_string("extends", "\"encyclopedia/layout.html\""))
-        f.write(formatted_string("block", "title"))
-        f.write(f"\t{title}\n")
-        f.write(formatted_string("endblock"))
-        f.write(formatted_string("block", "body"))
-        f.write(f"{html_text}\n")
-        f.write("<a href=\"{% url \'edit\' %}\">Edit this page</a>")
-        f.write(formatted_string("endblock"))
         
-#function to check whther a file exist or not
+#function to check whether a md file exist or not
 def check_file(title):
-    return os.path.isfile(f"encyclopedia/templates/encyclopedia/{title}.html")
+    return os.path.isfile(f"entries/{title}.md")
 
 #function to return a string that to append into the html file
 def formatted_string(name, text=None):
@@ -67,12 +51,14 @@ def formatted_string(name, text=None):
         return "{% "+ name + " " + text + " %}\n"
     return "{% "+ name + " %}\n"
 
-#function to find a page 
-def find_page(title, markdown_text):
-    if not check_file(title):
-        html_text = markdown2.markdown(markdown_text)
-        write_html(title, html_text)
-
+#function to find a page where the markdown language is converted to html
+def find_page(title):
+    markdown_text = get_entry(title)
+    if markdown_text != None:
+        markdowner = markdown2.Markdown()
+        return markdowner.convert(markdown_text)
+    return None
+    
 #function to return a list that stored all the name of the markdown file
 def get_file_name():
     _, filenames = default_storage.listdir("entries")

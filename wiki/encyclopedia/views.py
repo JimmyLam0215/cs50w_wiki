@@ -8,10 +8,13 @@ def index(request):
     })
 
 def get_entry(request, title):
-    markdown_text = util.get_entry(title)
-    if markdown_text != None:
-        util.find_page(title, markdown_text)
-        return render(request, f"encyclopedia/{title}.html")
+    content = util.find_page(title)
+    if content != None:
+        return render(request, f"encyclopedia/entry.html", {
+            "name": title,
+            "content": content,
+            "state": "normal"
+        })
     else:
         return render(request, "encyclopedia/missing.html")
         
@@ -22,21 +25,34 @@ def create(request):
         content = f"# {title}\n"+ content
         if(not util.check_file(title) and title != None and content != None):
             util.save_entry(title, content)
-            markdown_text = util.get_entry(title)
-            util.find_page(title, markdown_text)
-            return render(request, f"encyclopedia/{title}.html")
+            markdown_content = util.find_page(title)
+            return render(request, f"encyclopedia/entry.html", {
+                "name": title,
+                "content": markdown_content,
+                "state": "normal"
+            })
         else:
             return render(request, "encyclopedia/create_failed.html")
     return render(request, "encyclopedia/create.html")
         
 def random(request):
     random_page = util.random_page()
-    return render(request, f"encyclopedia/{random_page}.html")
+    content = util.find_page(random_page)
+    return render(request, f"encyclopedia/entry.html", {
+        "name": random_page,
+        "content": content,
+        "state": "normal"
+    })
 
 def search(request):
     query = request.GET.get('q', '')
     if util.check_page_name(query.lower()):
-        return render(request, f"encyclopedia/{query}.html")
+        content = util.find_page(query)
+        return render(request, f"encyclopedia/entry.html", {
+            "name": query,
+            "content": content,
+            "state": "normal"
+        })
     else:
         util.get_search_results(query)
         return render(request, "encyclopedia/search.html", {
@@ -44,5 +60,22 @@ def search(request):
         })
            
 def edit(request):
-    return render(request, "encyclopedia/edit.html")
+    if request.method == "POST":
+        title = request.POST.get("entry_title", "")
+        file_content = util.get_entry(title)
+        return render(request, "encyclopedia/edit_save.html", {
+            "title": title,
+            "content": file_content,
+        })
+
+def edit_save(request):
+    if request.method == "POST":
+        title = request.POST.get("title", "")
+        description = request.POST.get("description", "")
+        util.save_entry(title, description)
+        content = util.find_page(title)
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": content
+        })
     
